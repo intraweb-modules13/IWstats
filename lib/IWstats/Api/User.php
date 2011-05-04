@@ -15,7 +15,7 @@ class IWstats_Api_User extends Zikula_AbstractApi {
 
         $params = $_SERVER['QUERY_STRING'];
 
-        if (substr($params, -1) == '=')
+        if (strpos($params, '&') === false && $params != '')
             return true;
 
         $item = array('moduleid' => $modid,
