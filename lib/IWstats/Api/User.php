@@ -6,10 +6,17 @@ class IWstats_Api_User extends Zikula_AbstractApi {
         // prepare data
         $uid = (UserUtil::isLoggedIn()) ? UserUtil::getVar('uid') : 0;
 
+        //skip administrator
+        if ($uid == 2)
+            return true;
+
         // get module identity
         $modid = ModUtil::getIdFromName(ModUtil::getName());
-        
+
         $params = $_SERVER['QUERY_STRING'];
+
+        if (substr($params, -1) == '=')
+            return true;
 
         $item = array('moduleid' => $modid,
             'params' => $params,

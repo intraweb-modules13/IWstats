@@ -24,6 +24,9 @@ class IWstats_Controller_Admin extends Zikula_AbstractController {
         if (!SecurityUtil::checkPermission('IWstats::', '::', ACCESS_ADMIN)) {
             return LogUtil::registerPermissionError();
         }
+        
+        $uid = 0;
+        
         $rpp = 25;
 
         if ($uname != null && $uname != '') {
@@ -65,8 +68,11 @@ class IWstats_Controller_Admin extends Zikula_AbstractController {
                         $params .= $key . '=' . $v . '&';
                     }
                 }
-            } else
+            } else {
                 $params = '';
+                $records[$record['statsid']]['func'] = 'main';
+                $records[$record['statsid']]['type'] = 'user';
+            }
 
             $records[$record['statsid']]['params'] = substr($params, 0, -1);
 
@@ -88,7 +94,7 @@ class IWstats_Controller_Admin extends Zikula_AbstractController {
                 'name' => $module['name']);
         }
         
-        return $this->View->assign('records', $records)
+        return $this->view->assign('records', $records)
                 ->assign('users', $users)
                 ->assign('pager', array('numitems' => $nRecords, 'itemsperpage' => $rpp))
                 ->assign('modulesNames', $modulesNames)

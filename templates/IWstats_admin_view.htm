@@ -1,7 +1,10 @@
 {include file="IWstats_admin_menu.htm"}
 <div class="z-admincontainer">
-    <div class="z-adminpageicon">{img modname='core' src='configure.gif' set='icons/large' __alt='Settings' }</div>
+    <div class="z-adminpageicon">
+        {img modname='core' src='configure.png' set='icons/large' __alt='Settings' }
+    </div>
     <h2>{gt text="Pàgines consultades"}</h2>
+    {pager rowcount=$pager.numitems limit=$pager.itemsperpage posvar=startnum shift=1}
     <form id="filter" class="z-form" action="{modurl modname='IWstats' type='admin' func='view'}" method="post" enctype="application/x-www-form-urlencoded">
         <fieldset>
             <legend>{gt text="Filter"}</legend>
@@ -21,7 +24,7 @@
             <div class="z-center">
                 <div class="button">
                     <a href="javascript:document.forms['filter'].submit();">
-                    {img modname='core' src='button_ok.gif' set='icons/extrasmall' __alt='Filter' } {gt text="Filter"}
+                        {img modname='core' src='button_ok.png' set='icons/extrasmall' __alt='Filter' } {gt text="Filter"}
                     </a>
                 </div>
             </div>
@@ -30,6 +33,7 @@
     <table class="z-datatable">
         <thead>
             <tr>
+                <th>{gt text="id"}</th>
                 <th>{gt text="User"}</th>
                 <th>{gt text="Module"}</th>
                 <th>{gt text="Function"}</th>
@@ -43,6 +47,9 @@
             {foreach item=record from=$records}
             <tr>
                 <td>
+                    {$record.statsid}
+                </td>
+                <td>
                     {$users[$record.uid]}
                 </td>
                 <td width="70">
@@ -51,11 +58,9 @@
                 <td width="70">
                     {$record.func}
                 </td>
-
                 <td width="70">
                     {$record.type}
                 </td>
-
                 <td>
                     {$record.params}
                 </td>

@@ -36,7 +36,7 @@ class IWstats_Listeners
         }
 */
         
-        ModUtil::apiFunc('IWstats', 'user', 'collec');
+        ModUtil::apiFunc('IWstats', 'user', 'collect');
         
         
         /*

@@ -29,7 +29,7 @@ class IWstats_Api_Admin extends Zikula_AbstractApi {
         $links = array();
 
         if (SecurityUtil::checkPermission('IWstats::', '::', ACCESS_ADMIN)) {
-            $links[] = array('url' => ModUtil::url('IWstats', 'user'), 'text' => $this->__('View'));
+            $links[] = array('url' => ModUtil::url('IWstats', 'admin', 'view'), 'text' => $this->__('View'));
         }
         if (SecurityUtil::checkPermission('IWstats::', '::', ACCESS_ADMIN)) {
             $links[] = array('url' => ModUtil::url('IWstats', 'admin', 'reset'), 'text' => $this->__('Reset'));

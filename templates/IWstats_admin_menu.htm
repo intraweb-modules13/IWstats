@@ -1,13 +1,6 @@
+{ajaxheader modname=IWstats filename=IWforms.js}
 {admincategorymenu}
-<div class="pn-adminbox">
+<div class="z-adminbox">
     <h1>{gt text="Site statistics"}</h1>
-    <div class="pn-menu">
-[
-{*}
-        <a href="{modurl modname='IWstats' type='admin' func='reset'}">{gt text="Reset"}</a>
-|
-{*}
-        <a href="{modurl modname='IWstats' type='admin' func='view'}">{gt text="View"}</a>
-]
-    </div>
+    {modulelinks modname='IWstats' type='admin'}
 </div>

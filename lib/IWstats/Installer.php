@@ -63,10 +63,7 @@ class IWstats_Installer extends Zikula_AbstractInstaller {
             }
         }
 
-        // delete the system init hook
-        if (!ModUtil::unregisterHook('zikula', 'systeminit', 'API', 'IWstats', 'user', 'collect')) {
-            return LogUtil::registerError($this->__('unable to delete system init hook'));
-        }
+        EventUtil::unregisterPersistentModuleHandler('IWstats', 'core.postinit', array('IWstats_Listeners', 'coreinit'));
 
         // Deletion successful
         return true;
