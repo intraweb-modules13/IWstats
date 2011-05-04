@@ -1,0 +1,22 @@
+{include file="IWstats_admin_menu.htm"}
+<div class="pn-admincontainer">
+    <div class="pn-adminpageicon">{img modname='core' src='configure.gif' set='icons/large' __alt='Reset site statistics' }</div>
+    <h2>{gt text="Reset site statistics"}</h2>
+    <form class="pn-adminform" action="{modurl modname="IWstats" type="admin" func="reset"}" method="post" enctype="application/x-www-form-urlencoded">
+          <div>
+            <input type="hidden" name="authid" value="{insert name="generateauthkey" module="IWstats"}" />
+                   <input type="hidden" name="confirmation" value="1" />
+            <div class="pn-adminformrow">
+                <label for="IWstats_deletiondays">{gt text="Days to conserve (0 delete all the statistics)"}</label>
+                <input id="IWstats_deletiondays" type="text" name="deletiondays" size="5" maxlength="5" value="180" />
+            </div>
+            <div class="pn-warningmsg">
+                {gt text="After doing this action the data can not be restored."}
+            </div>
+            <div class="pn-adminformrow pn-adminformbuttons">
+                {button src='button_ok.gif' set='icons/small' __alt="Submit" __title="Submit"}
+                <a href="{modurl modname=IWstats type=admin func=main}">{img modname='core' src='button_cancel.gif' set='icons/small'   __alt="Cancel" __title="Cancel"}</a>
+            </div>
+        </div>
+    </form>
+</div>

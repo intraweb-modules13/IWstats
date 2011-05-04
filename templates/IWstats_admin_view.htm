@@ -1,0 +1,73 @@
+{include file="IWstats_admin_menu.htm"}
+<div class="z-admincontainer">
+    <div class="z-adminpageicon">{img modname='core' src='configure.gif' set='icons/large' __alt='Settings' }</div>
+    <h2>{gt text="Pàgines consultades"}</h2>
+    <form id="filter" class="z-form" action="{modurl modname='IWstats' type='admin' func='view'}" method="post" enctype="application/x-www-form-urlencoded">
+        <fieldset>
+            <legend>{gt text="Filter"}</legend>
+            <div class="z-formrow">
+                <label for="filter_module">{gt text="Module"}</label>
+                <select id="filter_module" name="moduleId" onChange="document.forms['filter'].submit();">
+                    <option value="0">{gt text="Choose a module..."}</option>
+                    {foreach item=module from=$modulesArray}
+                    <option {if $moduleId eq $module.id}selected="selected"{/if} value="{$module.id}">{$module.name}</option>
+                    {/foreach}
+                </select>
+            </div>
+            <div class="z-formrow">
+                <label for="filter_uname">{gt text="Username"}</label>
+                <input id="filter_uname" type="text" name="uname" value="{$uname}" />
+            </div>
+            <div class="z-center">
+                <div class="button">
+                    <a href="javascript:document.forms['filter'].submit();">
+                    {img modname='core' src='button_ok.gif' set='icons/extrasmall' __alt='Filter' } {gt text="Filter"}
+                    </a>
+                </div>
+            </div>
+        </fieldset>
+    </form>
+    <table class="z-datatable">
+        <thead>
+            <tr>
+                <th>{gt text="User"}</th>
+                <th>{gt text="Module"}</th>
+                <th>{gt text="Function"}</th>
+                <th>{gt text="Type"}</th>
+                <th>{gt text="Parameters"}</th>
+                <th>{gt text="Date and time"}</th>
+                <th>{gt text="IP"}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {foreach item=record from=$records}
+            <tr>
+                <td>
+                    {$users[$record.uid]}
+                </td>
+                <td width="70">
+                    {$modulesNames[$record.moduleid]}
+                </td>
+                <td width="70">
+                    {$record.func}
+                </td>
+
+                <td width="70">
+                    {$record.type}
+                </td>
+
+                <td>
+                    {$record.params}
+                </td>
+                <td width="150">
+                    {$record.datetime}
+                </td>
+                <td width="100">
+                    {$record.ip}
+                </td>
+            </tr>
+            {/foreach}
+        </tbody>
+    </table>
+    {pager rowcount=$pager.numitems limit=$pager.itemsperpage posvar=startnum shift=1}
+</div>
