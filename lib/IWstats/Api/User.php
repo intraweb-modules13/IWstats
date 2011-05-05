@@ -14,11 +14,14 @@ class IWstats_Api_User extends Zikula_AbstractApi {
         if (strpos($params, '&') === false && $params != '')
             return true;
 
+        $isadmin = (SecurityUtil::checkPermission('IWstats::', '::', ACCESS_ADMIN)) ? 1 : 0;
+
         $item = array('moduleid' => $modid,
             'params' => $params,
             'uid' => $uid,
             'ip' => $_SERVER['REMOTE_ADDR'],
             'datetime' => date('Y-m-d H:i:s', time()),
+            'isadmin' => $isadmin,
         );
 
         if (!DBUtil::insertObject($item, 'IWstats')) {
@@ -52,7 +55,7 @@ class IWstats_Api_User extends Zikula_AbstractApi {
         }
 
         $and = ($where == '') ? '' : ' AND';
-        $where .= "$and $c[uid] <> 2";
+        $where .= "$and $c[isadmin] = 0";
 
         $orderby = "$c[statsid] desc";
 

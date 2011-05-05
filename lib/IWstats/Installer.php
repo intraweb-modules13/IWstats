@@ -32,6 +32,10 @@ class IWstats_Installer extends Zikula_AbstractInstaller {
             return false;
         if (!DBUtil::createIndex($c['uid'], 'IWstats', 'uid'))
             return false;
+        if (!DBUtil::createIndex($c['ip'], 'IWstats', 'ip'))
+            return false;
+        if (!DBUtil::createIndex($c['isadmin'], 'IWstats', 'isadmin'))
+            return false;
 
         EventUtil::registerPersistentModuleHandler('IWstats', 'core.postinit', array('IWstats_Listeners', 'coreinit'));
 

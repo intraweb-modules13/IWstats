@@ -77,6 +77,12 @@ class IWstats_Controller_Admin extends Zikula_AbstractController {
                 $records[$record['statsid']]['type'] = 'user';
             }
 
+            $params = str_replace('%3F', '?', $params);
+            $params = str_replace('%3D', '=', $params);
+            $params = str_replace('%2F', '/', $params);
+            $params = str_replace('%26', '&', $params);
+            $params = str_replace('%7E', '~', $params);
+
             $records[$record['statsid']]['params'] = substr($params, 0, -1);
 
             $usersList .= $record['uid'] . '$$';
