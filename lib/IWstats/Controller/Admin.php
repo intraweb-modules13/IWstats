@@ -17,17 +17,18 @@ class IWstats_Controller_Admin extends Zikula_AbstractController {
     }
 
     public function view($args) {
-        $startpage = FormUtil::getPassedValue('startpage', isset($args['startpage']) ? $args['startpage'] : 1, 'POST');
-        $moduleId = FormUtil::getPassedValue('moduleId', isset($args['moduleId']) ? $args['moduleId'] : 0, 'POST');
-        $uname = FormUtil::getPassedValue('uname', isset($args['uname']) ? $args['uname'] : null, 'POST');
+        $startnum = FormUtil::getPassedValue('startnum', isset($args['startnum']) ? $args['startnum'] : 1, 'GETPOST');
+        $moduleId = FormUtil::getPassedValue('moduleId', isset($args['moduleId']) ? $args['moduleId'] : 0, 'GETPOST');
+        $uname = FormUtil::getPassedValue('uname', isset($args['uname']) ? $args['uname'] : null, 'GETPOST');
+        $ip = FormUtil::getPassedValue('ip', isset($args['ip']) ? $args['ip'] : null, 'GETPOST');
 
         if (!SecurityUtil::checkPermission('IWstats::', '::', ACCESS_ADMIN)) {
             return LogUtil::registerPermissionError();
         }
-        
+
         $uid = 0;
-        
-        $rpp = 25;
+
+        $rpp = 50;
 
         if ($uname != null && $uname != '') {
             // get user id from uname
@@ -39,15 +40,17 @@ class IWstats_Controller_Admin extends Zikula_AbstractController {
         }
         // get last records
         $records = ModUtil::apiFunc('IWstats', 'user', 'getAllRecords', array('rpp' => $rpp,
-                    'init' => $startpage,
+                    'init' => $startnum,
                     'moduleId' => $moduleId,
                     'uid' => $uid,
+                    'ip' => $ip,
                 ));
 
         // get last records
         $nRecords = ModUtil::apiFunc('IWstats', 'user', 'getAllRecords', array('onlyNumber' => 1,
                     'moduleId' => $moduleId,
                     'uid' => $uid,
+                    'ip' => $ip,
                 ));
 
         $usersList = '';
@@ -93,13 +96,14 @@ class IWstats_Controller_Admin extends Zikula_AbstractController {
             $modulesArray[] = array('id' => $module['id'],
                 'name' => $module['name']);
         }
-        
+
         return $this->view->assign('records', $records)
                 ->assign('users', $users)
                 ->assign('pager', array('numitems' => $nRecords, 'itemsperpage' => $rpp))
                 ->assign('modulesNames', $modulesNames)
                 ->assign('modulesArray', $modulesArray)
                 ->assign('moduleId', $moduleId)
+                ->assign('url', System::getBaseUrl())
                 ->assign('uname', $uname)
                 ->fetch('IWstats_admin_view.htm');
     }

@@ -1,10 +1,9 @@
 {include file="IWstats_admin_menu.htm"}
 <div class="z-admincontainer">
     <div class="z-adminpageicon">
-        {img modname='core' src='configure.png' set='icons/large' __alt='Settings' }
+        {img modname='IWstats' src='admin.gif' set='images' __alt='Statistics' }
     </div>
     <h2>{gt text="Pàgines consultades"}</h2>
-    {pager rowcount=$pager.numitems limit=$pager.itemsperpage posvar=startnum shift=1}
     <form id="filter" class="z-form" action="{modurl modname='IWstats' type='admin' func='view'}" method="post" enctype="application/x-www-form-urlencoded">
         <fieldset>
             <legend>{gt text="Filter"}</legend>
@@ -22,14 +21,18 @@
                 <input id="filter_uname" type="text" name="uname" value="{$uname}" />
             </div>
             <div class="z-center">
-                <div class="button">
+                <div class="z-buttons">
                     <a href="javascript:document.forms['filter'].submit();">
                         {img modname='core' src='button_ok.png' set='icons/extrasmall' __alt='Filter' } {gt text="Filter"}
+                    </a>
+                    <a href="{modurl modname='IWstats' type='admin' func='view'}">
+                        {img modname='core' src='quick_restart.png' set='icons/extrasmall' __alt='Reload' } {gt text="Reload"}
                     </a>
                 </div>
             </div>
         </fieldset>
     </form>
+    {pager rowcount=$pager.numitems limit=$pager.itemsperpage posvar=startnum shift=1}
     <table class="z-datatable">
         <thead>
             <tr>
@@ -41,6 +44,7 @@
                 <th>{gt text="Parameters"}</th>
                 <th>{gt text="Date and time"}</th>
                 <th>{gt text="IP"}</th>
+                <th>{gt text="Obre"}</th>
             </tr>
         </thead>
         <tbody>
@@ -50,10 +54,18 @@
                     {$record.statsid}
                 </td>
                 <td>
+                    {if $record.uid gt 0}
+                    <a href="{modurl modname='IWstats' type='admin' func='view' uname=$users[$record.uid]}" alt="">
+                        {$users[$record.uid]}
+                    </a>
+                    {else}
                     {$users[$record.uid]}
+                    {/if}
                 </td>
                 <td width="70">
-                    {$modulesNames[$record.moduleid]}
+                    <a href="{modurl modname='IWstats' type='admin' func='view' moduleId=$record.moduleid}" alt="">
+                        {$modulesNames[$record.moduleid]}
+                    </a>
                 </td>
                 <td width="70">
                     {$record.func}
@@ -68,7 +80,14 @@
                     {$record.datetime}
                 </td>
                 <td width="100">
-                    {$record.ip}
+                    <a href="{modurl modname='IWstats' type='admin' func='view' ip=$record.ip}" alt="">
+                        {$record.ip}
+                    </a>
+                </td>
+                <td>
+                    <a href="{$url}index.php?module={$modulesNames[$record.moduleid]}&func={$record.func}&type={$record.type}&{$record.params}" target="_blank" alt="">
+                        {gt text="Open"}
+                    </a>
                 </td>
             </tr>
             {/foreach}

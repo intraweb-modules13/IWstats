@@ -6,10 +6,6 @@ class IWstats_Api_User extends Zikula_AbstractApi {
         // prepare data
         $uid = (UserUtil::isLoggedIn()) ? UserUtil::getVar('uid') : 0;
 
-        //skip administrator
-        if ($uid == 2)
-            return true;
-
         // get module identity
         $modid = ModUtil::getIdFromName(ModUtil::getName());
 
@@ -50,6 +46,13 @@ class IWstats_Api_User extends Zikula_AbstractApi {
         if (isset($args['uid']) && $args['uid'] > 0) {
             $where = "$c[uid] = $args[uid]";
         }
+
+        if (isset($args['ip']) && $args['ip'] != null) {
+            $where = "$c[ip] = '$args[ip]'";
+        }
+
+        $and = ($where == '') ? '' : ' AND';
+        $where .= "$and $c[uid] <> 2";
 
         $orderby = "$c[statsid] desc";
 
