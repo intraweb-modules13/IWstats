@@ -54,6 +54,10 @@ class IWstats_Api_User extends Zikula_AbstractApi {
             $where = "$c[ip] = '$args[ip]'";
         }
 
+        if (isset($args['registered']) && $args['registered'] == 1) {
+            $where = "$c[uid] > 0";
+        }
+
         $and = ($where == '') ? '' : ' AND';
         $where .= "$and $c[isadmin] = 0";
 

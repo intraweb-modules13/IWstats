@@ -20,12 +20,16 @@
                 <label for="filter_uname">{gt text="Username"}</label>
                 <input id="filter_uname" type="text" name="uname" value="{$uname}" />
             </div>
+            <div class="z-formrow">
+                <label for="filter_registered">{gt text="Only registered users"}</label>
+                <input type="checkbox" id="filter_registered" {if $registered eq 1}checked="checked"{/if} name="registered" value="1" />
+            </div> 
             <div class="z-center">
                 <div class="z-buttons">
                     <a href="javascript:document.forms['filter'].submit();">
                         {img modname='core' src='button_ok.png' set='icons/extrasmall' __alt='Filter' } {gt text="Filter"}
                     </a>
-                    <a href="{modurl modname='IWstats' type='admin' func='view'}">
+                    <a href="{modurl modname='IWstats' type='admin' func='view'}" alt="">
                         {img modname='core' src='quick_restart.png' set='icons/extrasmall' __alt='Reload' } {gt text="Reload"}
                     </a>
                 </div>
@@ -55,8 +59,8 @@
                 </td>
                 <td>
                     {if $record.uid gt 0}
-                    <a href="{modurl modname='IWstats' type='admin' func='view' uname=$users[$record.uid]}" alt="">
-                        {$users[$record.uid]}
+                    <a href="{modurl modname='IWstats' type='admin' func='view' uname=$users[$record.uid].l}" alt="">
+                        {$users[$record.uid].ncc}
                     </a>
                     {else}
                     {$users[$record.uid]}

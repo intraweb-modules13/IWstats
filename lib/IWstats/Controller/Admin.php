@@ -21,6 +21,7 @@ class IWstats_Controller_Admin extends Zikula_AbstractController {
         $moduleId = FormUtil::getPassedValue('moduleId', isset($args['moduleId']) ? $args['moduleId'] : 0, 'GETPOST');
         $uname = FormUtil::getPassedValue('uname', isset($args['uname']) ? $args['uname'] : null, 'GETPOST');
         $ip = FormUtil::getPassedValue('ip', isset($args['ip']) ? $args['ip'] : null, 'GETPOST');
+        $registered = FormUtil::getPassedValue('registered', isset($args['registered']) ? $args['registered'] : 0, 'POST');
 
         if (!SecurityUtil::checkPermission('IWstats::', '::', ACCESS_ADMIN)) {
             return LogUtil::registerPermissionError();
@@ -44,6 +45,7 @@ class IWstats_Controller_Admin extends Zikula_AbstractController {
                     'moduleId' => $moduleId,
                     'uid' => $uid,
                     'ip' => $ip,
+                    'registered' => $registered,
                 ));
 
         // get last records
@@ -51,6 +53,7 @@ class IWstats_Controller_Admin extends Zikula_AbstractController {
                     'moduleId' => $moduleId,
                     'uid' => $uid,
                     'ip' => $ip,
+                    'registered' => $registered,
                 ));
 
         $usersList = '';
@@ -89,9 +92,10 @@ class IWstats_Controller_Admin extends Zikula_AbstractController {
         }
 
         $sv = ModUtil::func('IWmain', 'user', 'genSecurityValue');
-        $users = ModUtil::func('IWmain', 'user', 'getAllUsersInfo', array('info' => 'ncc',
+        $users = ModUtil::func('IWmain', 'user', 'getAllUsersInfo', array('info' => array('ncc', 'l'),
                     'sv' => $sv,
                     'list' => $usersList));
+
         $users[0] = $this->__('Unregistered');
 
         // get all modules
@@ -111,6 +115,7 @@ class IWstats_Controller_Admin extends Zikula_AbstractController {
                 ->assign('moduleId', $moduleId)
                 ->assign('url', System::getBaseUrl())
                 ->assign('uname', $uname)
+                ->assign('registered', $registered)
                 ->fetch('IWstats_admin_view.htm');
     }
 
