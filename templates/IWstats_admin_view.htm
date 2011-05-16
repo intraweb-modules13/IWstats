@@ -22,7 +22,7 @@
             </div>
             <div class="z-formrow">
                 <label for="filter_registered">{gt text="Only registered users"}</label>
-                <input type="checkbox" id="filter_registered" {if $registered eq 1}checked="checked"{/if} name="registered" value="1" />
+                <input type="checkbox" id="filter_registered" {if $registered eq 1}checked="checked"{/if} name="registered" value="1" onchange="document.forms['filter'].submit();" />
             </div> 
             <div class="z-center">
                 <div class="z-buttons">
@@ -67,9 +67,11 @@
                     {/if}
                 </td>
                 <td width="70">
+                    {if $record.moduleid gt 0}
                     <a href="{modurl modname='IWstats' type='admin' func='view' moduleId=$record.moduleid}" alt="">
                         {$modulesNames[$record.moduleid]}
                     </a>
+                    {/if}
                 </td>
                 <td width="70">
                     {$record.func}
@@ -89,9 +91,11 @@
                     </a>
                 </td>
                 <td>
+                    {if $record.moduleid gt 0}
                     <a href="{$url}index.php?module={$modulesNames[$record.moduleid]}&func={$record.func}&type={$record.type}&{$record.params}" target="_blank" alt="">
                         {gt text="Open"}
                     </a>
+                    {/if}
                 </td>
             </tr>
             {/foreach}

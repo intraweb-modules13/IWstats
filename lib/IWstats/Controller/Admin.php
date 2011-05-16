@@ -65,8 +65,13 @@ class IWstats_Controller_Admin extends Zikula_AbstractController {
                     $value = explode('=', $param);
                     $valueArray[$value[0]] = $value[1];
                 }
-                $records[$record['statsid']]['func'] = (isset($valueArray['func'])) ? $valueArray['func'] : 'main';
-                $records[$record['statsid']]['type'] = (isset($valueArray['type'])) ? $valueArray['type'] : 'user';
+                if ($record['moduleid'] > 0) {
+                    $records[$record['statsid']]['func'] = (isset($valueArray['func'])) ? $valueArray['func'] : 'main';
+                    $records[$record['statsid']]['type'] = (isset($valueArray['type'])) ? $valueArray['type'] : 'user';
+                } else {
+                    $records[$record['statsid']]['func'] = '';
+                    $records[$record['statsid']]['type'] = '';
+                }
 
                 $params = '';
                 foreach ($valueArray as $key => $v) {
@@ -76,8 +81,13 @@ class IWstats_Controller_Admin extends Zikula_AbstractController {
                 }
             } else {
                 $params = '';
-                $records[$record['statsid']]['func'] = 'main';
-                $records[$record['statsid']]['type'] = 'user';
+                if ($record['moduleid'] > 0) {
+                    $records[$record['statsid']]['func'] = 'main';
+                    $records[$record['statsid']]['type'] = 'user';
+                } else {
+                    $records[$record['statsid']]['func'] = '';
+                    $records[$record['statsid']]['type'] = '';
+                }
             }
 
             $params = str_replace('%3F', '?', $params);
