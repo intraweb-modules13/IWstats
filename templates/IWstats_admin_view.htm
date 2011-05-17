@@ -83,11 +83,14 @@
                     {$record.params}
                 </td>
                 <td width="150">
-                    {$record.datetime}
+                    {$record.datetime|date_format:"%H:%M:%S - %d/%m/%Y"}
                 </td>
-                <td width="100">
+                <td width="120">
                     <a href="{modurl modname='IWstats' type='admin' func='view' ip=$record.ip}" alt="">
                         {$record.ip}
+                    </a>
+                    <a href="{modurl modname='IWstats' type='admin' func='deleteIp' ip=$record.ip}">
+                        {img modname='core' src='14_layer_deletelayer.png' set='icons/extrasmall' __alt='Remove' }
                     </a>
                 </td>
                 <td>

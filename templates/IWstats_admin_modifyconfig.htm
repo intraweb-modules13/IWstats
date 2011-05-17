@@ -6,8 +6,11 @@
     <h2>{gt text="Settings"}</h2>
     <form class="z-form" action="{modurl modname='IWstats' type='admin' func='updateconfig'}" method="post" enctype="application/x-www-form-urlencoded">
         <div>
-            <input type="hidden" name="authid" value="{insert name="generateauthkey" module="IWstats"}" />
-
+            <input type="hidden" name="authid" value="{insert name='generateauthkey' module='IWstats'}" />
+            <div class="z-formrow">
+                <label for="skipedIps">{gt text="Skiped IPs (separeted by comma)"}</label>
+                <textarea id="skipedIps" name="skipedIps">{$skipedIps}</textarea>
+            </div>
             <div class="z-formrow z-formbuttons">
                 {button src='button_ok.png' set='icons/small' __alt="Update Configuration" __title="Update Configuration"}
             </div>

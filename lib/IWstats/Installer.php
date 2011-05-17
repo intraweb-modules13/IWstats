@@ -12,7 +12,7 @@ class IWstats_Installer extends Zikula_AbstractInstaller {
         }
 
         // Check if the version needed is correct
-        $versionNeeded = '2.0';
+        $versionNeeded = '3.0.0';
         if (!ModUtil::func('IWmain', 'admin', 'checkVersion', array('version' => $versionNeeded))) {
             return false;
         }
@@ -39,6 +39,9 @@ class IWstats_Installer extends Zikula_AbstractInstaller {
 
         EventUtil::registerPersistentModuleHandler('IWstats', 'core.postinit', array('IWstats_Listeners', 'coreinit'));
 
+        // create module vars
+        $this->setVar('skipedIps','');
+        
         // Initialisation successful
         return true;
     }
@@ -69,6 +72,9 @@ class IWstats_Installer extends Zikula_AbstractInstaller {
 
         EventUtil::unregisterPersistentModuleHandler('IWstats', 'core.postinit', array('IWstats_Listeners', 'coreinit'));
 
+        // delete module vars
+        $this->delVar('skipedIps');
+        
         // Deletion successful
         return true;
     }
