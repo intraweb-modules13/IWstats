@@ -190,9 +190,7 @@ class IWstats_Controller_Admin extends Zikula_AbstractController {
         }
 
         // Confirm authorisation code
-        if (!SecurityUtil::confirmAuthKey()) {
-            return LogUtil::registerAuthidError(ModUtil::url('IWstats', 'admin', 'view'));
-        }
+        $this->checkCsrfToken();
 
         $this->setVar('skipedIps', $skipedIps);
 
