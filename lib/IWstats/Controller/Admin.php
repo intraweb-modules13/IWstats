@@ -17,11 +17,27 @@ class IWstats_Controller_Admin extends Zikula_AbstractController {
     }
 
     public function view($args) {
+        $statsSaved = unserialize(SessionUtil::getVar('statsSaved'));
         $startnum = FormUtil::getPassedValue('startnum', isset($args['startnum']) ? $args['startnum'] : 1, 'GETPOST');
-        $moduleId = FormUtil::getPassedValue('moduleId', isset($args['moduleId']) ? $args['moduleId'] : 0, 'GETPOST');
-        $uname = FormUtil::getPassedValue('uname', isset($args['uname']) ? $args['uname'] : null, 'GETPOST');
-        $ip = FormUtil::getPassedValue('ip', isset($args['ip']) ? $args['ip'] : null, 'GETPOST');
-        $registered = FormUtil::getPassedValue('registered', isset($args['registered']) ? $args['registered'] : 0, 'POST');
+        $moduleId = FormUtil::getPassedValue('moduleId', isset($args['moduleId']) ? $args['moduleId'] : $statsSaved['moduleId'], 'GETPOST');
+        $uname = FormUtil::getPassedValue('uname', isset($args['uname']) ? $args['uname'] : $statsSaved['uname'], 'GETPOST');
+        $ip = FormUtil::getPassedValue('ip', isset($args['ip']) ? $args['ip'] : $statsSaved['ip'], 'GETPOST');
+        $registered = FormUtil::getPassedValue('registered', isset($args['registered']) ? $args['registered'] : $statsSaved['registered'], 'GETPOST');
+        $reset = FormUtil::getPassedValue('reset', isset($args['reset']) ? $args['reset'] : $statsSaved['reset'], 'GET');
+
+        SessionUtil::setVar('statsSaved', serialize(array('moduleId' => $moduleId,
+                    'uname' => $uname,
+                    'ip' => $ip,
+                    'registered' => $registered,
+                )));
+
+        if ($reset == 1) {
+            $ip = null;
+            $uname = null;
+            $registered = 0;
+            $moduleId = 0;
+            SessionUtil::delVar('statsSaved');
+        }
 
         if (!SecurityUtil::checkPermission('IWstats::', '::', ACCESS_ADMIN)) {
             return LogUtil::registerPermissionError();
@@ -39,6 +55,7 @@ class IWstats_Controller_Admin extends Zikula_AbstractController {
                 $uname = '';
             }
         }
+
         // get last records
         $records = ModUtil::apiFunc('IWstats', 'user', 'getAllRecords', array('rpp' => $rpp,
                     'init' => $startnum,
@@ -212,13 +229,13 @@ class IWstats_Controller_Admin extends Zikula_AbstractController {
         }
 
         if (!$confirm) {
-                    // Assign all the module variables to the template
-        return $this->view->assign('ip', $ip)
-                ->fetch('IWstats_admin_deleteip.htm');
+            // Assign all the module variables to the template
+            return $this->view->assign('ip', $ip)
+                    ->fetch('IWstats_admin_deleteip.htm');
         }
-        
+
         $this->checkCsrfToken();
-        
+
         if (!ModUtil::apiFunc('IWstats', 'admin', 'deleteIp', array('ip' => $ip))) {
             LogUtil::registerError($this->__f('Error deleting the ip \'%s\'', array($ip)));
             return System::redirect(ModUtil::url('IWstats', 'admin', 'view'));

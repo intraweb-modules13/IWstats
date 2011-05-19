@@ -60,19 +60,23 @@ class IWstats_Api_User extends Zikula_AbstractApi {
         $c = $table['IWstats_column'];
 
         if (isset($args['moduleId']) && $args['moduleId'] > 0) {
-            $where = "$c[moduleid] = $args[moduleId]";
+            $and = ($where != '') ? ' AND ' : '';
+            $where .= $and . "$c[moduleid] = $args[moduleId]";
         }
 
         if (isset($args['uid']) && $args['uid'] > 0) {
-            $where = "$c[uid] = $args[uid]";
+            $and = ($where != '') ? ' AND ' : '';
+            $where .= $and . "$c[uid] = $args[uid]";
         }
 
         if (isset($args['ip']) && $args['ip'] != null) {
-            $where = "$c[ip] = '$args[ip]'";
+            $and = ($where != '') ? ' AND ' : '';
+            $where .= $and . "$c[ip] = '$args[ip]'";
         }
 
         if (isset($args['registered']) && $args['registered'] == 1) {
-            $where = "$c[uid] > 0";
+            $and = ($where != '') ? ' AND ' : '';
+            $where .= $and . "$c[uid] > 0";
         }
 
         $and = ($where == '') ? '' : ' AND';
