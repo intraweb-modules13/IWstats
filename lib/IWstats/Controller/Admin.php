@@ -204,12 +204,21 @@ class IWstats_Controller_Admin extends Zikula_AbstractController {
     }
 
     public function deleteIp($args) {
-        $ip = FormUtil::getPassedValue('ip', isset($args['ip']) ? $args['ip'] : 1, 'GET');
+        $ip = FormUtil::getPassedValue('ip', isset($args['ip']) ? $args['ip'] : 1, 'GETPOST');
+        $confirm = FormUtil::getPassedValue('confirm', isset($args['confirm']) ? $args['confirm'] : 0, 'POST');
         // Security check
         if (!SecurityUtil::checkPermission('IWstats::', '::', ACCESS_ADMIN)) {
             return LogUtil::registerPermissionError();
         }
 
+        if (!$confirm) {
+                    // Assign all the module variables to the template
+        return $this->view->assign('ip', $ip)
+                ->fetch('IWstats_admin_deleteip.htm');
+        }
+        
+        $this->checkCsrfToken();
+        
         if (!ModUtil::apiFunc('IWstats', 'admin', 'deleteIp', array('ip' => $ip))) {
             LogUtil::registerError($this->__f('Error deleting the ip \'%s\'', array($ip)));
             return System::redirect(ModUtil::url('IWstats', 'admin', 'view'));
