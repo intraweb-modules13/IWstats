@@ -27,19 +27,12 @@ class IWstats_Api_User extends Zikula_AbstractApi {
             $ip = ModUtil::apiFunc('IWstats', 'user', 'cleanremoteaddr', array('originaladdr' => $_SERVER['HTTP_CLIENT_IP']));
         }
 
-        // remove skiped ips
+        // remove skiped ips by range
         $skipedIps = $this->getVar('skipedIps');
         $skipedIpsArray = explode(',', $skipedIps);
         foreach ($skipedIpsArray as $range) {
             if ($this->ip_in_range($ip, $range) || $ip == $range) return true;
-        }
-
-        /*
-        if (in_array($ip, $skipedIpsArray)) {
-            return true;
-        }
-        */
-       
+        }   
         
         $item = array('moduleid' => $modid,
             'params' => $params,
