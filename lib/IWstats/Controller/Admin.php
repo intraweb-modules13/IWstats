@@ -23,7 +23,7 @@ class IWstats_Controller_Admin extends Zikula_AbstractController {
         $uname = FormUtil::getPassedValue('uname', isset($args['uname']) ? $args['uname'] : $statsSaved['uname'], 'GETPOST');
         $ip = FormUtil::getPassedValue('ip', isset($args['ip']) ? $args['ip'] : $statsSaved['ip'], 'GETPOST');
         $registered = FormUtil::getPassedValue('registered', isset($args['registered']) ? $args['registered'] : $statsSaved['registered'], 'GETPOST');
-        $reset = FormUtil::getPassedValue('reset', isset($args['reset']) ? $args['reset'] : $statsSaved['reset'], 'GET');
+        $reset = FormUtil::getPassedValue('reset', isset($args['reset']) ? $args['reset'] : 0, 'GET');
 
         SessionUtil::setVar('statsSaved', serialize(array('moduleId' => $moduleId,
                     'uname' => $uname,
