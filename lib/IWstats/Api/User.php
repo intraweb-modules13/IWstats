@@ -31,7 +31,7 @@ class IWstats_Api_User extends Zikula_AbstractApi {
         $skipedIps = $this->getVar('skipedIps');
         $skipedIpsArray = explode(',', $skipedIps);
         foreach ($skipedIpsArray as $range) {
-            if ($this->ip_in_range($ip, $range) || $ip == $range) return true;
+            $skiped = ($this->ip_in_range($ip, $range) || $ip == $range) ? 1 : 0;
         }   
         
         $item = array('moduleid' => $modid,
@@ -40,6 +40,7 @@ class IWstats_Api_User extends Zikula_AbstractApi {
             'ip' => $ip,
             'datetime' => date('Y-m-d H:i:s', time()),
             'isadmin' => $isadmin,
+            'skiped' => $skiped,
         );
 
         if (!DBUtil::insertObject($item, 'IWstats')) {
@@ -81,7 +82,7 @@ class IWstats_Api_User extends Zikula_AbstractApi {
         }
 
         $and = ($where == '') ? '' : ' AND';
-        $where .= "$and $c[isadmin] = 0";
+        $where .= "$and $c[isadmin] = 0 AND $c[skiped] = 0";
 
         $orderby = "$c[statsid] desc";
 
