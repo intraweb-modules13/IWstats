@@ -30,10 +30,14 @@ class IWstats_Api_User extends Zikula_AbstractApi {
         // remove skiped ips by range
         $skipedIps = $this->getVar('skipedIps');
         $skipedIpsArray = explode(',', $skipedIps);
+        $skiped = 0;
         foreach ($skipedIpsArray as $range) {
-            $skiped = ($this->ip_in_range($ip, $range) || $ip == $range) ? 1 : 0;
-        }   
-        
+            if ($this->ip_in_range($ip, $range) || $ip == $range) {
+                $skiped = 1;
+                break;
+            }
+        }
+
         $item = array('moduleid' => $modid,
             'params' => $params,
             'uid' => $uid,
