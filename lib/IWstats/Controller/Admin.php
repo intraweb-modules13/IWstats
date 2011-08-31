@@ -24,12 +24,15 @@ class IWstats_Controller_Admin extends Zikula_AbstractController {
         $ip = FormUtil::getPassedValue('ip', isset($args['ip']) ? $args['ip'] : $statsSaved['ip'], 'GETPOST');
         $registered = FormUtil::getPassedValue('registered', isset($args['registered']) ? $args['registered'] : $statsSaved['registered'], 'GETPOST');
         $reset = FormUtil::getPassedValue('reset', isset($args['reset']) ? $args['reset'] : 0, 'GET');
+        $fromDate = FormUtil::getPassedValue('fromDate', isset($args['fromDate']) ? $args['fromDate'] : null, 'GETPOST');
+        $toDate = FormUtil::getPassedValue('toDate', isset($args['toDate']) ? $args['toDate'] : null, 'GETPOST');
+
 
         SessionUtil::setVar('statsSaved', serialize(array('moduleId' => $moduleId,
-                    'uname' => $uname,
-                    'ip' => $ip,
-                    'registered' => $registered,
-                )));
+                            'uname' => $uname,
+                            'ip' => $ip,
+                            'registered' => $registered,
+                        )));
 
         if ($reset == 1) {
             $ip = null;
@@ -44,8 +47,8 @@ class IWstats_Controller_Admin extends Zikula_AbstractController {
         }
 
         $uid = 0;
-
         $rpp = 50;
+        $lastDays = 10;
 
         if ($uname != null && $uname != '') {
             // get user id from uname
@@ -56,6 +59,26 @@ class IWstats_Controller_Admin extends Zikula_AbstractController {
             }
         }
 
+        $time = time();
+
+        if ($fromDate != null) {
+            $fromDate = mktime(0, 0, 0, substr($fromDate, 3, 2), substr($fromDate, 0, 2), substr($fromDate, 6, 4));
+            $fromDate = date('Y-m-d 00:00:00', $fromDate);
+            $fromDate = DateUtil::makeTimestamp($fromDate);
+            $fromDate = date('d-m-Y', $fromDate);
+        } else {
+            $fromDate = date('d-m-Y', $time - $lastDays * 24 * 60 * 60);
+        }
+
+        if ($toDate != null) {
+            $toDate = mktime(0, 0, 0, substr($toDate, 3, 2), substr($toDate, 0, 2), substr($toDate, 6, 4));
+            $toDate = date('Y-m-d 00:00:00', $toDate);
+            $toDate = DateUtil::makeTimestamp($toDate);
+            $toDate = date('d-m-Y', $toDate);
+        } else {
+            $toDate = date('d-m-Y', $time);
+        }
+
         // get last records
         $records = ModUtil::apiFunc('IWstats', 'user', 'getAllRecords', array('rpp' => $rpp,
                     'init' => $startnum,
@@ -63,6 +86,8 @@ class IWstats_Controller_Admin extends Zikula_AbstractController {
                     'uid' => $uid,
                     'ip' => $ip,
                     'registered' => $registered,
+                    'fromDate' => $fromDate,
+                    'toDate' => $toDate,
                 ));
 
         // get last records
@@ -71,6 +96,8 @@ class IWstats_Controller_Admin extends Zikula_AbstractController {
                     'uid' => $uid,
                     'ip' => $ip,
                     'registered' => $registered,
+                    'fromDate' => $fromDate,
+                    'toDate' => $toDate,
                 ));
 
         $usersList = '';
@@ -143,6 +170,9 @@ class IWstats_Controller_Admin extends Zikula_AbstractController {
                 ->assign('url', System::getBaseUrl())
                 ->assign('uname', $uname)
                 ->assign('registered', $registered)
+                ->assign('fromDate', $fromDate)
+                ->assign('toDate', $toDate)
+                ->assign('maxDate', date('Ymd', time()))
                 ->fetch('IWstats_admin_view.htm');
     }
 
@@ -244,6 +274,162 @@ class IWstats_Controller_Admin extends Zikula_AbstractController {
         // Success
         LogUtil::registerStatus($this->__f('Ip \'%s\' deleted', array($ip)));
         return System::redirect(ModUtil::url('IWstats', 'admin', 'view'));
+    }
+
+    public function viewStats($args) {
+        $statsSaved = unserialize(SessionUtil::getVar('statsSaved'));
+        $startnum = FormUtil::getPassedValue('startnum', isset($args['startnum']) ? $args['startnum'] : 1, 'GETPOST');
+        $moduleId = FormUtil::getPassedValue('moduleId', isset($args['moduleId']) ? $args['moduleId'] : $statsSaved['moduleId'], 'GETPOST');
+        $uname = FormUtil::getPassedValue('uname', isset($args['uname']) ? $args['uname'] : $statsSaved['uname'], 'GETPOST');
+        $ip = FormUtil::getPassedValue('ip', isset($args['ip']) ? $args['ip'] : $statsSaved['ip'], 'GETPOST');
+        $registered = FormUtil::getPassedValue('registered', isset($args['registered']) ? $args['registered'] : $statsSaved['registered'], 'GETPOST');
+        $reset = FormUtil::getPassedValue('reset', isset($args['reset']) ? $args['reset'] : 0, 'GET');
+        $fromDate = FormUtil::getPassedValue('fromDate', isset($args['fromDate']) ? $args['fromDate'] : null, 'GETPOST');
+        $toDate = FormUtil::getPassedValue('toDate', isset($args['toDate']) ? $args['toDate'] : null, 'GETPOST');
+        SessionUtil::setVar('statsSaved', serialize(array('moduleId' => $moduleId,
+                            'uname' => $uname,
+                            'ip' => $ip,
+                            'registered' => $registered,
+                        )));
+
+        if ($reset == 1) {
+            $ip = null;
+            $uname = null;
+            $registered = 0;
+            $moduleId = 0;
+            SessionUtil::delVar('statsSaved');
+        }
+
+        if (!SecurityUtil::checkPermission('IWstats::', '::', ACCESS_ADMIN)) {
+            throw new Zikula_Exception_Forbidden();
+        }
+
+        $uid = 0;
+        $rpp = 50;
+        $lastDays = 10;
+
+        if ($uname != null && $uname != '') {
+            // get user id from uname
+            $uid = UserUtil::getIdFromName($uname);
+            if (!$uid) {
+                LogUtil::registerError(__f('User \'%s\' not found', array($uname)));
+                $uname = '';
+            }
+        }
+
+        $time = time();
+
+        if ($fromDate != null) {
+            $fromDate = mktime(0, 0, 0, substr($fromDate, 3, 2), substr($fromDate, 0, 2), substr($fromDate, 6, 4));
+            $fromDate = date('Y-m-d 00:00:00', $fromDate);
+            $fromDate = DateUtil::makeTimestamp($fromDate);
+            $fromDate = date('d-m-Y', $fromDate);
+        } else {
+            $fromDate = date('d-m-Y', $time - $lastDays * 24 * 60 * 60);
+        }
+
+        if ($toDate != null) {
+            $toDate = mktime(0, 0, 0, substr($toDate, 3, 2), substr($toDate, 0, 2), substr($toDate, 6, 4));
+            $toDate = date('Y-m-d 00:00:00', $toDate);
+            $toDate = DateUtil::makeTimestamp($toDate);
+            $toDate = date('d-m-Y', $toDate);
+        } else {
+            $toDate = date('d-m-Y', $time);
+        }
+
+        // get last records
+        $records = ModUtil::apiFunc('IWstats', 'user', 'getAllRecords', array('rpp' => -1,
+                    'init' => -1,
+                    'moduleId' => $moduleId,
+                    'uid' => $uid,
+                    'ip' => $ip,
+                    'registered' => $registered,
+                    'fromDate' => $fromDate,
+                    'toDate' => $toDate,
+                ));
+
+        $usersList = '';
+        $usersIdsCounter = array();
+        $usersIpCounter = array();
+        foreach ($records as $record) {
+            $usersIpCounter[$record['ip']] = (isset($usersIpCounter[$record['ip']])) ? $usersIpCounter[$record['ip']] + 1 : 1;
+            $usersIdsCounter[$record['uid']] = (isset($usersIdsCounter[$record['uid']])) ? $usersIdsCounter[$record['uid']] + 1 : 1;
+            $usersList .= $record['uid'] . '$$';
+        }
+        /*
+          foreach ($records as $record) {
+          if ($record['params'] != '') {
+          $valueArray = array();
+          $paramsArray = explode('&', $record['params']);
+          foreach ($paramsArray as $param) {
+          $value = explode('=', $param);
+          $valueArray[$value[0]] = $value[1];
+          }
+          if ($record['moduleid'] > 0) {
+          $records[$record['statsid']]['func'] = (isset($valueArray['func'])) ? $valueArray['func'] : 'main';
+          $records[$record['statsid']]['type'] = (isset($valueArray['type'])) ? $valueArray['type'] : 'user';
+          } else {
+          $records[$record['statsid']]['func'] = '';
+          $records[$record['statsid']]['type'] = '';
+          }
+
+          $params = '';
+          foreach ($valueArray as $key => $v) {
+          if ($key != 'module' && $key != 'func' && $key != 'type') {
+          $params .= $key . '=' . $v . '&';
+          }
+          }
+          } else {
+          $params = '';
+          if ($record['moduleid'] > 0) {
+          $records[$record['statsid']]['func'] = 'main';
+          $records[$record['statsid']]['type'] = 'user';
+          } else {
+          $records[$record['statsid']]['func'] = '';
+          $records[$record['statsid']]['type'] = '';
+          }
+          }
+
+          $params = str_replace('%3F', '?', $params);
+          $params = str_replace('%3D', '=', $params);
+          $params = str_replace('%2F', '/', $params);
+          $params = str_replace('%26', '&', $params);
+          $params = str_replace('%7E', '~', $params);
+
+          $records[$record['statsid']]['params'] = substr($params, 0, -1);
+
+          $usersList .= $record['uid'] . '$$';
+          }
+         */
+
+        $sv = ModUtil::func('IWmain', 'user', 'genSecurityValue');
+        $users = ModUtil::func('IWmain', 'user', 'getAllUsersInfo', array('info' => array('ncc', 'l'),
+                    'sv' => $sv,
+                    'list' => $usersList));
+
+        // get all modules
+        $modules = ModUtil::apiFunc('Extensions', 'admin', 'listmodules', array('state' => 0));
+
+        foreach ($modules as $module) {
+            $modulesNames[$module['id']] = $module['name'];
+            $modulesArray[] = array('id' => $module['id'],
+                'name' => $module['name']);
+        }
+
+        return $this->view->assign('records', $records)
+                ->assign('users', $users)
+                ->assign('usersIdsCounter', $usersIdsCounter)
+                ->assign('usersIpCounter', $usersIpCounter)
+                ->assign('modulesNames', $modulesNames)
+                ->assign('modulesArray', $modulesArray)
+                ->assign('moduleId', $moduleId)
+                ->assign('url', System::getBaseUrl())
+                ->assign('uname', $uname)
+                ->assign('registered', $registered)
+                ->assign('fromDate', $fromDate)
+                ->assign('toDate', $toDate)
+                ->assign('maxDate', date('Ymd', time()))
+                ->fetch('IWstats_admin_stats.htm');
     }
 
 }

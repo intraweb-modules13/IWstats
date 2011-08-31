@@ -26,7 +26,7 @@ class IWstats_Api_Admin extends Zikula_AbstractApi {
         $c = $table['IWstats_column'];
         $where = "$c[ip] = '$args[ip]'";
         if (!DBUtil::deleteWhere('IWstats', $where)) {
-            return LogUtil::registerError ($this->__('Error! Sorry! Deletion attempt failed.'));
+            return LogUtil::registerError($this->__('Error! Sorry! Deletion attempt failed.'));
         }
 
         return true;
@@ -42,7 +42,10 @@ class IWstats_Api_Admin extends Zikula_AbstractApi {
         $links = array();
 
         if (SecurityUtil::checkPermission('IWstats::', '::', ACCESS_ADMIN)) {
-            $links[] = array('url' => ModUtil::url('IWstats', 'admin', 'view'), 'text' => $this->__('View'));
+            $links[] = array('url' => ModUtil::url('IWstats', 'admin', 'view'), 'text' => $this->__('View visited pages'));
+        }
+        if (SecurityUtil::checkPermission('IWstats::', '::', ACCESS_ADMIN)) {
+            $links[] = array('url' => ModUtil::url('IWstats', 'admin', 'viewStats'), 'text' => $this->__('View stats'));
         }
         if (SecurityUtil::checkPermission('IWstats::', '::', ACCESS_ADMIN)) {
             $links[] = array('url' => ModUtil::url('IWstats', 'admin', 'reset'), 'text' => $this->__('Reset'));

@@ -9,7 +9,7 @@
         {img modname='IWstats' src='admin.gif' set='images' __alt='Statistics' }
     </div>
     <h2>{gt text="Pàgines consultades"}</h2>
-    <form id="filter" class="z-form" action="{modurl modname='IWstats' type='admin' func='view'}" method="post" enctype="application/x-www-form-urlencoded">
+    <form id="filter" class="z-form" action="{modurl modname='IWstats' type='admin' func='viewStats'}" method="post" enctype="application/x-www-form-urlencoded">
         <fieldset>
             <legend>{gt text="Filter"}</legend>
             <div class="z-formrow">
@@ -46,82 +46,35 @@
                     <a href="javascript:document.forms['filter'].submit();">
                         {img modname='core' src='button_ok.png' set='icons/extrasmall' __alt='Filter' } {gt text="Filter"}
                     </a>
-                    <a href="{modurl modname='IWstats' type='admin' func='view' reset=1}" alt="">
+                    <a href="{modurl modname='IWstats' type='admin' func='viewStats' reset=1}" alt="">
                         {img modname='core' src='quick_restart.png' set='icons/extrasmall' __alt='Reload' } {gt text="Reload"}
                     </a>
                 </div>
             </div>
         </fieldset>
     </form>
-    {pager rowcount=$pager.numitems limit=$pager.itemsperpage posvar=startnum shift=1}
-    <table class="z-datatable">
-        <thead>
-            <tr>
-                <th>{gt text="id"}</th>
-                <th>{gt text="User"}</th>
-                <th>{gt text="Module"}</th>
-                <th>{gt text="Function"}</th>
-                <th>{gt text="Type"}</th>
-                <th>{gt text="Parameters"}</th>
-                <th>{gt text="Date and time"}</th>
-                <th>{gt text="IP"}</th>
-                <th>{gt text="Obre"}</th>
-            </tr>
-        </thead>
-        <tbody>
-            {foreach item=record from=$records}
-            <tr>
-                <td>
-                    {$record.statsid}
-                </td>
-                <td>
-                    {if $record.uid gt 0}
-                    <a href="{modurl modname='IWstats' type='admin' func='view' uname=$users[$record.uid].l}" alt="">
-                        {$users[$record.uid].ncc} ({$users[$record.uid].l})
-                    </a>
-                    {else}
-                    {$users[$record.uid]}
-                    {/if}
-                </td>
-                <td width="70">
-                    {if $record.moduleid gt 0}
-                    <a href="{modurl modname='IWstats' type='admin' func='view' moduleId=$record.moduleid}" alt="">
-                        {$modulesNames[$record.moduleid]}
-                    </a>
-                    {/if}
-                </td>
-                <td width="70">
-                    {$record.func}
-                </td>
-                <td width="70">
-                    {$record.type}
-                </td>
-                <td>
-                    {$record.params}
-                </td>
-                <td width="150">
-                    {$record.datetime|date_format:"%H:%M:%S - %d/%m/%Y"}
-                </td>
-                <td width="120">
-                    <a href="{modurl modname='IWstats' type='admin' func='view' ip=$record.ip}" alt="">
-                        {$record.ip}
-                    </a>
-                    <a href="{modurl modname='IWstats' type='admin' func='deleteIp' ip=$record.ip}">
-                        {img modname='core' src='14_layer_deletelayer.png' set='icons/extrasmall' __alt='Remove'}
-                    </a>
-                </td>
-                <td>
-                    {if $record.moduleid gt 0}
-                    <a href="{$url}index.php?module={$modulesNames[$record.moduleid]}&func={$record.func}&type={$record.type}&{$record.params}" target="_blank" alt="">
-                        {gt text="Open"}
-                    </a>
-                    {/if}
-                </td>
-            </tr>
+    <fieldset>
+        <legend>{gt text="Users"}</legend>
+        <div>
+            {gt text="Number of different Ip:"} {$usersIpCounter|@count}
+        </div>
+        <div>
+            {gt text="Number of registered users:"} {$users|@count}
+        </div>
+        {if $users|@count gt 0}
+        <div>
+            {gt text="List of users:"}
+        </div>
+        <div>
+            {foreach item=user from=$users name=users key=k}
+            {$user.ncc} {if $user.ncc neq $user.l}({$user.l}){/if} [{$usersIdsCounter[$k]}]
+            {if not $smarty.foreach.users.last}
+            -
+            {/if}
             {/foreach}
-        </tbody>
-    </table>
-    {pager rowcount=$pager.numitems limit=$pager.itemsperpage posvar=startnum shift=1}
+        </div>
+        {/if}
+    </fieldset>
 </div>
 <script type="text/javascript">
     var from = Calendar.setup({

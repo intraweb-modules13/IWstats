@@ -88,6 +88,15 @@ class IWstats_Api_User extends Zikula_AbstractApi {
         $and = ($where == '') ? '' : ' AND';
         $where .= "$and $c[isadmin] = 0 AND $c[skiped] = 0";
 
+        if ($args['fromDate'] != null) {
+            $and = ($where == '') ? '' : ' AND';
+            $from = mktime(0, 0, 0, substr($args['fromDate'], 3, 2), substr($args['fromDate'], 0, 2), substr($args['fromDate'], 6, 4));
+            $to = mktime(23, 59, 59, substr($args['toDate'], 3, 2), substr($args['toDate'], 0, 2), substr($args['toDate'], 6, 4));
+            $fromSQL = date('Y-m-d H:i:s', $from);
+            $toSQL = date('Y-m-d H:i:s', $to);
+            $where .= "$and ($c[datetime] BETWEEN '$fromSQL' AND '$toSQL')";
+        }
+
         $orderby = "$c[statsid] desc";
 
         if (isset($args['onlyNumber']) && $args['onlyNumber'] == 1) {
