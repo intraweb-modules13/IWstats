@@ -15,7 +15,7 @@ class IWstats_Api_User extends Zikula_AbstractApi {
             return true;
 
         $isadmin = (SecurityUtil::checkPermission('IWstats::', '::', ACCESS_ADMIN)) ? 1 : 0;
-//$isadmin = 0;
+
         $ip = '';
         if (!empty($_SERVER['REMOTE_ADDR'])) {
             $ip = ModUtil::apiFunc('IWstats', 'user', 'cleanremoteaddr', array('originaladdr' => $_SERVER['REMOTE_ADDR']));
@@ -115,7 +115,6 @@ class IWstats_Api_User extends Zikula_AbstractApi {
         $goodmatches = array();
         $lanmatches = array();
         foreach ($matches as $match) {
-            //        print_r($match);
             // check to make sure it's not an internal address.
             // the following are reserved for private lans...
             // 10.0.0.0 - 10.255.255.255
@@ -180,24 +179,24 @@ class IWstats_Api_User extends Zikula_AbstractApi {
      * Please do not remove this header, or source attibution from this file.
      */
 
-// decbin32
-// In order to simplify working with IP addresses (in binary) and their
-// netmasks, it is easier to ensure that the binary strings are padded
-// with zeros out to 32 characters - IP addresses are 32 bit numbers
+    // decbin32
+    // In order to simplify working with IP addresses (in binary) and their
+    // netmasks, it is easier to ensure that the binary strings are padded
+    // with zeros out to 32 characters - IP addresses are 32 bit numbers
     function decbin32($dec) {
         return str_pad(decbin($dec), 32, '0', STR_PAD_LEFT);
     }
 
-// ip_in_range
-// This function takes 2 arguments, an IP address and a "range" in several
-// different formats.
-// Network ranges can be specified as:
-// 1. Wildcard format:     1.2.3.*
-// 2. CIDR format:         1.2.3/24  OR  1.2.3.4/255.255.255.0
-// 3. Start-End IP format: 1.2.3.0-1.2.3.255
-// The function will return true if the supplied IP is within the range.
-// Note little validation is done on the range inputs - it expects you to
-// use one of the above 3 formats.
+    // ip_in_range
+    // This function takes 2 arguments, an IP address and a "range" in several
+    // different formats.
+    // Network ranges can be specified as:
+    // 1. Wildcard format:     1.2.3.*
+    // 2. CIDR format:         1.2.3/24  OR  1.2.3.4/255.255.255.0
+    // 3. Start-End IP format: 1.2.3.0-1.2.3.255
+    // The function will return true if the supplied IP is within the range.
+    // Note little validation is done on the range inputs - it expects you to
+    // use one of the above 3 formats.
     private function ip_in_range($ip, $range) {
         if (strpos($range, '/') !== false) {
             // $range is in IP/NETMASK format
@@ -247,5 +246,4 @@ class IWstats_Api_User extends Zikula_AbstractApi {
             return false;
         }
     }
-
 }

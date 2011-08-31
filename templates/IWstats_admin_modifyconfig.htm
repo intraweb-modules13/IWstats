@@ -8,8 +8,15 @@
         <div>
             <input type="hidden" name="csrftoken" value="{insert name='csrftoken'}" />
             <div class="z-formrow">
-                <label for="skipedIps">{gt text="Skiped IPs (separeted by comma). x values are as wildcards"}</label>
+                <label for="skipedIps">{gt text="Skiped IPs (separeted by comma). * values are wildcards"}</label>
                 <textarea id="skipedIps" name="skipedIps">{$skipedIps}</textarea>
+                <div class="z-formnote z-informationmsg">
+                    <ol>
+                        <li>Wildcard format: 1.2.3.*</li>
+                        <li>CIDR format: 1.2.3/24  OR  1.2.3.4/255.255.255.0</li>
+                        <li>Start-End IP format: 1.2.3.0-1.2.3.255</li>
+                    </ol>
+                </div>
             </div>
             <div class="z-formrow z-formbuttons">
                 {button src='button_ok.png' set='icons/small' __alt="Update Configuration" __title="Update Configuration"}

@@ -10,7 +10,7 @@ class IWstats_Controller_Admin extends Zikula_AbstractController {
     public function main() {
         // Security check
         if (!SecurityUtil::checkPermission('IWstats::', '::', ACCESS_ADMIN)) {
-            return LogUtil::registerPermissionError();
+            throw new Zikula_Exception_Forbidden();
         }
 
         return System::redirect(ModUtil::url('IWstats', 'admin', 'view'));
@@ -40,7 +40,7 @@ class IWstats_Controller_Admin extends Zikula_AbstractController {
         }
 
         if (!SecurityUtil::checkPermission('IWstats::', '::', ACCESS_ADMIN)) {
-            return LogUtil::registerPermissionError();
+            throw new Zikula_Exception_Forbidden();
         }
 
         $uid = 0;
@@ -126,7 +126,7 @@ class IWstats_Controller_Admin extends Zikula_AbstractController {
         $users[0] = $this->__('Unregistered');
 
         // get all modules
-        $modules = ModUtil::apiFunc('Extensions', 'admin', 'listmodules');
+        $modules = ModUtil::apiFunc('Extensions', 'admin', 'listmodules', array('state' => 0));
 
         foreach ($modules as $module) {
             $modulesNames[$module['id']] = $module['name'];
@@ -152,7 +152,7 @@ class IWstats_Controller_Admin extends Zikula_AbstractController {
 
         // Security check
         if (!SecurityUtil::checkPermission('IWstats::', '::', ACCESS_ADMIN)) {
-            return LogUtil::registerPermissionError();
+            throw new Zikula_Exception_Forbidden();
         }
 
         // Check for confirmation.
@@ -184,7 +184,7 @@ class IWstats_Controller_Admin extends Zikula_AbstractController {
     public function modifyconfig() {
         // Security check
         if (!SecurityUtil::checkPermission('IWstats::', '::', ACCESS_ADMIN)) {
-            return LogUtil::registerPermissionError();
+            throw new Zikula_Exception_Forbidden();
         }
 
         // Assign all the module variables to the template
@@ -203,7 +203,7 @@ class IWstats_Controller_Admin extends Zikula_AbstractController {
         $skipedIps = FormUtil::getPassedValue('skipedIps', isset($args['skipedIps']) ? $args['skipedIps'] : 1, 'POST');
         // Security check
         if (!SecurityUtil::checkPermission('IWstats::', '::', ACCESS_ADMIN)) {
-            return LogUtil::registerPermissionError();
+            throw new Zikula_Exception_Forbidden();
         }
 
         // Confirm authorisation code
@@ -225,7 +225,7 @@ class IWstats_Controller_Admin extends Zikula_AbstractController {
         $confirm = FormUtil::getPassedValue('confirm', isset($args['confirm']) ? $args['confirm'] : 0, 'POST');
         // Security check
         if (!SecurityUtil::checkPermission('IWstats::', '::', ACCESS_ADMIN)) {
-            return LogUtil::registerPermissionError();
+            throw new Zikula_Exception_Forbidden();
         }
 
         if (!$confirm) {
