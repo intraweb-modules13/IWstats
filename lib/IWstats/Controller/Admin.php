@@ -29,10 +29,10 @@ class IWstats_Controller_Admin extends Zikula_AbstractController {
 
 
         SessionUtil::setVar('statsSaved', serialize(array('moduleId' => $moduleId,
-                            'uname' => $uname,
-                            'ip' => $ip,
-                            'registered' => $registered,
-                        )));
+                    'uname' => $uname,
+                    'ip' => $ip,
+                    'registered' => $registered,
+                )));
 
         if ($reset == 1) {
             $ip = null;
@@ -162,18 +162,18 @@ class IWstats_Controller_Admin extends Zikula_AbstractController {
         }
 
         return $this->view->assign('records', $records)
-                ->assign('users', $users)
-                ->assign('pager', array('numitems' => $nRecords, 'itemsperpage' => $rpp))
-                ->assign('modulesNames', $modulesNames)
-                ->assign('modulesArray', $modulesArray)
-                ->assign('moduleId', $moduleId)
-                ->assign('url', System::getBaseUrl())
-                ->assign('uname', $uname)
-                ->assign('registered', $registered)
-                ->assign('fromDate', $fromDate)
-                ->assign('toDate', $toDate)
-                ->assign('maxDate', date('Ymd', time()))
-                ->fetch('IWstats_admin_view.htm');
+                        ->assign('users', $users)
+                        ->assign('pager', array('numitems' => $nRecords, 'itemsperpage' => $rpp))
+                        ->assign('modulesNames', $modulesNames)
+                        ->assign('modulesArray', $modulesArray)
+                        ->assign('moduleId', $moduleId)
+                        ->assign('url', System::getBaseUrl())
+                        ->assign('uname', $uname)
+                        ->assign('registered', $registered)
+                        ->assign('fromDate', $fromDate)
+                        ->assign('toDate', $toDate)
+                        ->assign('maxDate', date('Ymd', time()))
+                        ->fetch('IWstats_admin_view.htm');
     }
 
     public function reset($args) {
@@ -217,9 +217,20 @@ class IWstats_Controller_Admin extends Zikula_AbstractController {
             throw new Zikula_Exception_Forbidden();
         }
 
+        // get all modules
+        $modules = ModUtil::apiFunc('Extensions', 'admin', 'listmodules', array('state' => 0));
+
+        $moduleIds = unserialize($this->getVar('modulesSkipped'));
+        $i = 0;
+        foreach ($modules as $module) {
+            $modules[$i]['active'] = (in_array($module['id'], $moduleIds)) ? 1 : 0;
+            $i++;
+        }
+
         // Assign all the module variables to the template
         return $this->view->assign('skipedIps', $this->getVar('skipedIps'))
-                ->fetch('IWstats_admin_modifyconfig.htm');
+                        ->assign('modules', $modules)
+                        ->fetch('IWstats_admin_modifyconfig.htm');
     }
 
     /**
@@ -231,6 +242,7 @@ class IWstats_Controller_Admin extends Zikula_AbstractController {
      */
     public function updateconfig($args) {
         $skipedIps = FormUtil::getPassedValue('skipedIps', isset($args['skipedIps']) ? $args['skipedIps'] : 1, 'POST');
+        $moduleId = FormUtil::getPassedValue('moduleId', isset($args['moduleId']) ? $args['moduleId'] : array(), 'POST');
         // Security check
         if (!SecurityUtil::checkPermission('IWstats::', '::', ACCESS_ADMIN)) {
             throw new Zikula_Exception_Forbidden();
@@ -238,8 +250,14 @@ class IWstats_Controller_Admin extends Zikula_AbstractController {
 
         // Confirm authorisation code
         $this->checkCsrfToken();
+        
+        $modulesIdArray = array();
+        foreach ($moduleId as $m) {
+            $modulesIdArray[] = $m;
+        }
 
-        $this->setVar('skipedIps', $skipedIps);
+        $this->setVar('skipedIps', $skipedIps)
+                ->setVar('modulesSkipped', serialize($modulesIdArray));
 
         // The configuration has been changed, so we clear all caches for this module.
         $this->view->clear_all_cache();
@@ -261,7 +279,7 @@ class IWstats_Controller_Admin extends Zikula_AbstractController {
         if (!$confirm) {
             // Assign all the module variables to the template
             return $this->view->assign('ip', $ip)
-                    ->fetch('IWstats_admin_deleteip.htm');
+                            ->fetch('IWstats_admin_deleteip.htm');
         }
 
         $this->checkCsrfToken();
@@ -287,10 +305,10 @@ class IWstats_Controller_Admin extends Zikula_AbstractController {
         $fromDate = FormUtil::getPassedValue('fromDate', isset($args['fromDate']) ? $args['fromDate'] : null, 'GETPOST');
         $toDate = FormUtil::getPassedValue('toDate', isset($args['toDate']) ? $args['toDate'] : null, 'GETPOST');
         SessionUtil::setVar('statsSaved', serialize(array('moduleId' => $moduleId,
-                            'uname' => $uname,
-                            'ip' => $ip,
-                            'registered' => $registered,
-                        )));
+                    'uname' => $uname,
+                    'ip' => $ip,
+                    'registered' => $registered,
+                )));
 
         if ($reset == 1) {
             $ip = null;
@@ -417,19 +435,19 @@ class IWstats_Controller_Admin extends Zikula_AbstractController {
         }
 
         return $this->view->assign('records', $records)
-                ->assign('users', $users)
-                ->assign('usersIdsCounter', $usersIdsCounter)
-                ->assign('usersIpCounter', $usersIpCounter)
-                ->assign('modulesNames', $modulesNames)
-                ->assign('modulesArray', $modulesArray)
-                ->assign('moduleId', $moduleId)
-                ->assign('url', System::getBaseUrl())
-                ->assign('uname', $uname)
-                ->assign('registered', $registered)
-                ->assign('fromDate', $fromDate)
-                ->assign('toDate', $toDate)
-                ->assign('maxDate', date('Ymd', time()))
-                ->fetch('IWstats_admin_stats.htm');
+                        ->assign('users', $users)
+                        ->assign('usersIdsCounter', $usersIdsCounter)
+                        ->assign('usersIpCounter', $usersIpCounter)
+                        ->assign('modulesNames', $modulesNames)
+                        ->assign('modulesArray', $modulesArray)
+                        ->assign('moduleId', $moduleId)
+                        ->assign('url', System::getBaseUrl())
+                        ->assign('uname', $uname)
+                        ->assign('registered', $registered)
+                        ->assign('fromDate', $fromDate)
+                        ->assign('toDate', $toDate)
+                        ->assign('maxDate', date('Ymd', time()))
+                        ->fetch('IWstats_admin_stats.htm');
     }
 
 }

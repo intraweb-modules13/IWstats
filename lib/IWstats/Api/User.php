@@ -9,6 +9,13 @@ class IWstats_Api_User extends Zikula_AbstractApi {
         // get module identity
         $modid = ModUtil::getIdFromName(ModUtil::getName());
 
+        // skip modules selected as skipped in settings
+        $moduleIds = unserialize($this->getVar('modulesSkipped'));
+        if (is_array($moduleIds)) {
+        if (in_array($modid, $moduleIds))
+            return true;
+        }
+
         $params = $_SERVER['QUERY_STRING'];
 
         if (strpos($params, '&') === false && $params != '')
@@ -255,4 +262,5 @@ class IWstats_Api_User extends Zikula_AbstractApi {
             return false;
         }
     }
+
 }
