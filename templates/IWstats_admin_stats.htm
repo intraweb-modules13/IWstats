@@ -1,9 +1,9 @@
 {include file="IWstats_admin_menu.htm"}
-<link rel="stylesheet" href="modules/IWmain/js/calendar/css/jscal2.css" type="text/css" />
-<link rel="stylesheet" href="modules/IWmain/js/calendar/css/border-radius.css" type="text/css" />
-<link rel="stylesheet" href="modules/IWmain/js/calendar/css/style.css" type="text/css" />
-<script type="text/javascript" src="modules/IWmain/js/calendar/jscal2.js"></script>
-<script type="text/javascript" src="modules/IWmain/js/calendar/lang/ca.js"></script>
+<link rel="stylesheet" href="modules/IWstats/javascript/calendar/css/jscal2.css" type="text/css" />
+<link rel="stylesheet" href="modules/IWstats/javascript/calendar/css/border-radius.css" type="text/css" />
+<link rel="stylesheet" href="modules/IWstats/javascript/calendar/css/style.css" type="text/css" />
+<script type="text/javascript" src="modules/IWstats/javascript/calendar/jscal2.js"></script>
+<script type="text/javascript" src="modules/IWstats/javascript/calendar/lang/ca.js"></script>
 <div class="z-admincontainer">
     <div class="z-adminpageicon">
         {img modname='IWstats' src='admin.gif' set='images' __alt='Statistics' }
@@ -21,71 +21,144 @@
                     <input type="button" id="toDate_btn" value="..." />
                 </div>
             </div>
-            <div class="z-formrow">
-                <label for="filter_module">{gt text="Module"}</label>
-                <select id="filter_module" name="moduleId">
-                    <option value="0">{gt text="Choose a module..."}</option>
-                    {foreach item=module from=$modulesArray}
-                    <option {if $moduleId eq $module.id}selected="selected"{/if} value="{$module.id}">{$module.name}</option>
-                    {/foreach}
-                </select>
-            </div>
-            <div class="z-formrow">
-                <label for="filter_uname">{gt text="Username"}</label>
-                <input id="filter_uname" type="text" name="uname" value="{$uname}" />
-            </div>
-            <div class="z-formrow">
-                <label for="filter_registered">{gt text="Kind of users"}</label>
-                <select  id="filter_registered" name="registered">
-                    <option {if $registered eq 0}selected="selected"{/if} value="0">{gt text="All users"}</option>
-                    <option {if $registered eq 1}selected="selected"{/if} value="1">{gt text="Only registered users"}</option>
-                </select>
-            </div>
             <div class="z-center">
                 <div class="z-buttons">
                     <a href="javascript:document.forms['filter'].submit();">
                         {img modname='core' src='button_ok.png' set='icons/extrasmall' __alt='Filter' } {gt text="Filter"}
                     </a>
-                    <a href="{modurl modname='IWstats' type='admin' func='viewStats' reset=1}" alt="">
-                        {img modname='core' src='quick_restart.png' set='icons/extrasmall' __alt='Reload' } {gt text="Reload"}
-                    </a>
                 </div>
             </div>
         </fieldset>
     </form>
+
     <fieldset>
         <legend>{gt text="Users"}</legend>
-        <div>
-            {gt text="Number of different Ip:"} {$usersIpCounter|@count}
+        <div class="statsItem">
+            {gt text="Number of registers:"} {$nRecords}
         </div>
-        <div>
-            {gt text="Number of registered users:"} {$users|@count}
+        <div class="statsItem">
+            {gt text="Number of different Ip:"} {$usersIpCounter}
         </div>
-        {if $users|@count gt 0}
-        <div>
-            {gt text="List of users:"}
+        <div class="statsItem">
+            {gt text="Number of different registered users:"} {$nusers}
         </div>
-        <div>
-            {foreach item=user from=$users name=users key=k}
-            {$user.ncc} {if $user.ncc neq $user.l}({$user.l}){/if} [{$usersIdsCounter[$k]}]
-            {if not $smarty.foreach.users.last}
-            -
-            {/if}
-            {/foreach}
+        <form id="userstats" class="z-form" action="{modurl modname='IWstats' type='admin' func='viewStats'}" method="post" enctype="application/x-www-form-urlencoded">
+            <div class="z-formrow">
+                <label for="stats_userstats">{gt text="User's stadistics"}</label>
+                <input type="text" name="uname" id="stats_userstats" value="{$uname}" />
+            </div>
+            <div class="z-center">
+                <div class="z-buttons">
+                    <a href="javascript:document.forms['userstats'].submit();">
+                        {img modname='core' src='button_ok.png' set='icons/extrasmall' __alt='Filter' } {gt text="Filter"}
+                    </a>
+                </div>
+            </div>
+        </form>
+        {if $uname neq ''}
+        <h2>{$userName}</h2>
+        <div class="statsItem">
+            {gt text="Number of registers:"} {$userArray.nRecords}
         </div>
+        <table class="z-datatable">
+            <thead>
+                <tr>
+                    <th>{gt text="Module"}</th>
+                    <th>{gt text="Visits"}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {foreach item=module from=$userArray.userModulesArray key=key}
+                <tr>
+                    <td>
+                        <a href="{modurl modname='IWstats' type='admin' func='viewStats' moduleName=$key}">{$key}</a>
+                    </td>
+                    <td>
+                        {$module}
+                    </td>
+                </tr>
+                {foreachelse}
+                <tr>
+                    <td colspan="2">{gt text="No data found in this interval of time"}</td>
+                </tr>
+                {/foreach}
+            </tbody>
+        </table>
         {/if}
     </fieldset>
+    <fieldset>
+        <legend>{gt text="Modules"}</legend>
+        <table class="z-datatable">
+            <thead>
+                <tr>
+                    <th>{gt text="Module"}</th>
+                    <th>{gt text="Visits"}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {foreach item=module from=$moduleStatsArray key=key}
+                <tr>
+                    <td>
+                        <a href="{modurl modname='IWstats' type='admin' func='viewStats' moduleName=$key}">
+                            {$key}
+                        </a>
+                    </td>
+                    <td>
+                        {$module}
+                    </td>
+                </tr>
+                {foreachelse}
+                <tr>
+                    <td colspan="2">{gt text="No data found in this interval of time"}</td>
+                </tr>
+                {/foreach}
+            </tbody>
+        </table>
+        {if $moduleName}
+        <h2>{$moduleName}</h2>
+        <table class="z-datatable">
+            <thead>
+                <tr>
+                    <th>{gt text="User"}</th>
+                    <th>{gt text="Visits"}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {foreach item=visits from=$usersForModule key=key}
+                {if isset($users[$key])}
+                <tr>
+                    <td>
+                        <a href="{modurl modname='IWstats' type='admin' func='viewStats' uid=$key}">
+                            {$users[$key]}
+                        </a>
+                    </td>
+                    <td>
+                        {$visits}
+                    </td>
+                </tr>
+                {/if}
+                {foreachelse}
+                <tr>
+                    <td colspan="2">{gt text="No data found in this interval of time"}</td>
+                </tr>
+                {/foreach}
+            </tbody>
+        </table>
+        {/if}
+    </fieldset>
+
 </div>
+
 <script type="text/javascript">
     var from = Calendar.setup({
-        onSelect       :    function(from) { from.hide() },
+        onSelect       :    function(from) {from.hide()},
         max : {{$maxDate}}
     });
 
     from.manageFields("fromDate_btn", "fromDate", "%d-%m-%Y");
 
     var to = Calendar.setup({
-        onSelect       :    function(to) { to.hide() },
+        onSelect       :    function(to) {to.hide()},
         max : {{$maxDate}}
     });
     to.manageFields("toDate_btn", "toDate", "%d-%m-%Y");

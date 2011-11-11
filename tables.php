@@ -13,7 +13,8 @@ function IWstats_tables() {
         'params' => 'iw_params',
         'uid' => 'iw_uid',
         'isadmin' => 'iw_isadmin',
-        'skiped' => 'iw_skiped',
+        'skipped' => 'iw_skipped',
+        'skippedModule' => 'iw_skippedModule',
     );
     $table['IWstats_column_def'] = array('statsid' => "I NOTNULL AUTO PRIMARY",
         'datetime' => "T DEFDATETIME NOTNULL DEFAULT '1970-01-01 00:00:00'",
@@ -22,8 +23,34 @@ function IWstats_tables() {
         'params' => "C(100) NOTNULL DEFAULT ''",
         'uid' => "I NOTNULL DEFAULT '0'",
         'isadmin' => "I1 NOTNULL DEFAULT '0'",
-        'skiped' => "I1 NOTNULL DEFAULT '0'",
+        'skipped' => "I1 NOTNULL DEFAULT '0'",
+        'skippedModule' => "I1 NOTNULL DEFAULT '0'",
     );
+
+    $table['IWstats_summary'] = DBUtil::getLimitedTablename('IWstats_summary');
+    $table['IWstats_summary_column'] = array('summaryid' => 'iw_summaryid',
+        'datetime' => 'iw_datetime',
+        'nrecords' => 'iw_nrecords',
+        'registered' => 'iw_registered',
+        'modules' => 'iw_modules',
+        'skipped' => 'iw_skipped',
+        'skippedModule' => 'iw_skippedModule',
+        'isadmin' => 'iw_isadmin',
+        'users' => 'iw_users',
+        'nips' => 'iw_nips',
+    );
+    $table['IWstats_summary_column_def'] = array('summaryid' => "I NOTNULL AUTO PRIMARY",
+        'datetime' => "T DEFDATETIME NOTNULL DEFAULT '1970-01-01 00:00:00'",
+        'nrecords' => "I NOTNULL DEFAULT '0'",
+        'registered' => "I NOTNULL DEFAULT '0'",
+        'modules' => "X NOTNULL",
+        'skipped' => "I NOTNULL DEFAULT '0'",
+        'skippedModule' => "I NOTNULL DEFAULT '0'",
+        'isadmin' => "I NOTNULL DEFAULT '0'",
+        'users' => "X NOTNULL",
+        'nips' => "I NOTNULL DEFAULT '0'",
+    );
+
 
     // Return the table information
     return $table;

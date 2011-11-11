@@ -1,9 +1,9 @@
 {include file="IWstats_admin_menu.htm"}
-<link rel="stylesheet" href="modules/IWmain/js/calendar/css/jscal2.css" type="text/css" />
-<link rel="stylesheet" href="modules/IWmain/js/calendar/css/border-radius.css" type="text/css" />
-<link rel="stylesheet" href="modules/IWmain/js/calendar/css/style.css" type="text/css" />
-<script type="text/javascript" src="modules/IWmain/js/calendar/jscal2.js"></script>
-<script type="text/javascript" src="modules/IWmain/js/calendar/lang/ca.js"></script>
+<link rel="stylesheet" href="modules/IWstats/pnjavascript/calendar/css/jscal2.css" type="text/css" />
+<link rel="stylesheet" href="modules/IWstats/pnjavascript/calendar/css/border-radius.css" type="text/css" />
+<link rel="stylesheet" href="modules/IWstats/pnjavascript/calendar/css/style.css" type="text/css" />
+<script type="text/javascript" src="modules/IWstats/pnjavascript/calendar/jscal2.js"></script>
+<script type="text/javascript" src="modules/IWstats/pnjavascript/calendar/lang/ca.js"></script>
 <div class="z-admincontainer">
     <div class="z-adminpageicon">
         {img modname='IWstats' src='admin.gif' set='images' __alt='Statistics' }
@@ -47,7 +47,7 @@
                         {img modname='core' src='button_ok.png' set='icons/extrasmall' __alt='Filter' } {gt text="Filter"}
                     </a>
                     <a href="{modurl modname='IWstats' type='admin' func='view' reset=1}" alt="">
-                        {img modname='core' src='quick_restart.png' set='icons/extrasmall' __alt='Reload' } {gt text="Reload"}
+                        {img modname='core' src='agt_reload.png' set='icons/extrasmall' __alt='Reload' } {gt text="Reload"}
                     </a>
                 </div>
             </div>
@@ -76,8 +76,8 @@
                 </td>
                 <td>
                     {if $record.uid gt 0}
-                    <a href="{modurl modname='IWstats' type='admin' func='view' uname=$users[$record.uid].l}" alt="">
-                        {$users[$record.uid].ncc} ({$users[$record.uid].l})
+                    <a href="{modurl modname='IWstats' type='admin' func='view' uname=$usersMails[$record.uid]}" alt="">
+                        {$users[$record.uid]} ({$usersMails[$record.uid]})
                     </a>
                     {else}
                     {$users[$record.uid]}
@@ -100,7 +100,7 @@
                     {$record.params}
                 </td>
                 <td width="150">
-                    {$record.datetime|date_format:"%H:%M:%S - %d/%m/%Y"}
+                    {$record.datetime|dateformat:"%H:%M:%S - %d/%m/%Y"}
                 </td>
                 <td width="120">
                     <a href="{modurl modname='IWstats' type='admin' func='view' ip=$record.ip}" alt="">
@@ -125,14 +125,14 @@
 </div>
 <script type="text/javascript">
     var from = Calendar.setup({
-        onSelect       :    function(from) { from.hide() },
+        onSelect       :    function(from) {from.hide()},
         max : {{$maxDate}}
     });
 
     from.manageFields("fromDate_btn", "fromDate", "%d-%m-%Y");
 
     var to = Calendar.setup({
-        onSelect       :    function(to) { to.hide() },
+        onSelect       :    function(to) {to.hide()},
         max : {{$maxDate}}
     });
     to.manageFields("toDate_btn", "toDate", "%d-%m-%Y");
