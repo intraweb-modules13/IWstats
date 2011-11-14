@@ -428,9 +428,8 @@ class IWstats_Controller_Admin extends Zikula_AbstractController {
                     $subDataPre = substr($subDataPre, 0, $userDataPos);
                     $userModules = explode('#', $subDataPre);
                     foreach ($userModules as $module) {
-                        //print $module . '<br />';
                         $oneModule = explode('=', $module);
-                        if (array_key_exists($modulesNames[$oneModule[0]], $modulesStatsArray)) {
+                        if (array_key_exists($modulesNames[$oneModule[0]], $userModulesArray)) {
                             $userModulesArray[$modulesNames[$oneModule[0]]] = $oneModule[1];
                         } else {
                             $userModulesArray[$modulesNames[$oneModule[0]]] = $userModulesArray[$modulesNames[$oneModule[0]]] + $oneModule[1];
