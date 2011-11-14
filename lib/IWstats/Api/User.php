@@ -126,7 +126,7 @@ class IWstats_Api_User extends Zikula_AbstractApi {
         // Check for an error with the database code, and if so set an appropriate
         // error message and return
         if ($items === false) {
-            return LogUtil::registerError($this->__('No s\'han pogut carregar els registres.'));
+            return LogUtil::registerError($this->__('Error! Load attempt failed.'));
         }
 
         // Return the items
@@ -232,7 +232,7 @@ class IWstats_Api_User extends Zikula_AbstractApi {
         // Check for an error with the database code, and if so set an appropriate
         // error message and return
         if ($items === false) {
-            return LogUtil::registerError($this->__('No s\'han pogut carregar els registres.'));
+            return LogUtil::registerError($this->__('Error! Load attempt failed.'));
         }
 
         // Return the items
