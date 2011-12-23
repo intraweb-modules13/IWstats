@@ -1,6 +1,7 @@
 <?php
 
 class IWstats_Installer extends Zikula_AbstractInstaller {
+
     public function Install() {
         // Checks if module IWmain is installed. If not returns error
         $modid = ModUtil::getIdFromName('IWmain');
@@ -37,14 +38,11 @@ class IWstats_Installer extends Zikula_AbstractInstaller {
             return false;
 
         // Set up config variables
-        //ModUtil::setVar('IWstats', 'excludeusers', '');
-        // create the system init hook
-        if (!ModUtil::registerHook('zikula', 'systeminit', 'API', 'IWstats', 'user', 'collect')) {
-            return LogUtil::registerError($this->__('unable to create system init hook'));
-        }
-        ModUtil::apiFunc('Modules', 'admin', 'enablehooks', array('callermodname' => 'zikula', 'hookmodname' => 'IWstats'));
-        LogUtil::registerStatus($this->__('Stats have been enabled, you can change this in the hook settings (Administration -> Modules -> System hooks) by deactivating the Stats systeminit hook for Zikula itself'));
+        $this->setVar('skippedIps', '')
+                ->setVar('modulesSkipped', '');
 
+        // create the system init hook
+        EventUtil::registerPersistentModuleHandler('IWstats', 'core.postinit', array('IWstats_Listeners', 'coreinit'));
 
         // Initialisation successful
         return true;
@@ -58,8 +56,7 @@ class IWstats_Installer extends Zikula_AbstractInstaller {
     public function Upgrade($oldversion) {
         switch ($oldversion) {
             case '0.1':
-                if (!DBUtil::createTable('IWstats_summary'))
-                    return false;
+                EventUtil::registerPersistentModuleHandler('IWstats', 'core.postinit', array('IWstats_Listeners', 'coreinit'));
         }
         // Update successful
         return true;
@@ -71,17 +68,19 @@ class IWstats_Installer extends Zikula_AbstractInstaller {
      */
     public function uninstall() {
         // drop tables
-        $tables = array('IWstats');
+        $tables = array('IWstats', 'IWstats_summary');
         foreach ($tables as $table) {
             if (!DBUtil::dropTable($table)) {
                 return false;
             }
         }
 
+        // delete config variables
+        $this->delVar('skippedIps', '')
+                ->delVar('modulesSkipped', '');
+
         // delete the system init hook
-        if (!ModUtil::unregisterHook('zikula', 'systeminit', 'API', 'IWstats', 'user', 'collect')) {
-            return LogUtil::registerError($this->__('unable to delete system init hook'));
-        }
+        EventUtil::unregisterPersistentModuleHandler('IWstats', 'core.postinit', array('IWstats_Listeners', 'coreinit'));
 
         // Deletion successful
         return true;

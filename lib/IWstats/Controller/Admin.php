@@ -165,7 +165,10 @@ class IWstats_Controller_Admin extends Zikula_AbstractController {
         $modules = ModUtil::apiFunc('Extensions', 'admin', 'listmodules', array('state' => 0));
 
         $skippedModulesArray = unserialize(ModUtil::getVar('IWstats', 'modulesSkipped'));
-
+        $modulesNames = array();
+        $modulesArray = array();
+        if (!is_array($skippedModulesArray))
+            $skippedModulesArray = array();
         foreach ($modules as $module) {
             if (!in_array($module['id'], $skippedModulesArray)) {
                 $modulesNames[$module['id']] = $module['name'];
@@ -235,6 +238,8 @@ class IWstats_Controller_Admin extends Zikula_AbstractController {
         $modules = ModUtil::apiFunc('Extensions', 'admin', 'listmodules', array('state' => 0));
 
         $moduleIds = unserialize(ModUtil::getVar('IWstats', 'modulesSkipped'));
+        if (!is_array($moduleIds))
+            $moduleIds = array();
         $i = 0;
         foreach ($modules as $module) {
             $modules[$i]['active'] = (in_array($module['id'], $moduleIds)) ? 1 : 0;
