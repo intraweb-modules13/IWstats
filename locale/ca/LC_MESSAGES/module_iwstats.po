@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: IWstats versió 0.1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-11-14 13:03+0100\n"
-"PO-Revision-Date: 2011-11-14 13:40+0100\n"
+"PO-Revision-Date: 2011-12-29 20:20+0100\n"
 "Last-Translator: intraweb <intraweb@xtec.cat>\n"
 "Language-Team: Intraweb <intraweb@xtec.cat>\n"
 "MIME-Version: 1.0\n"
@@ -168,7 +168,7 @@ msgstr "Els usuaris no validats poden veure els noms dels usuaris connectats"
 
 #: templates/IWstats_block_editusersonline.htm:6
 msgid "Session time (between 10 and 120 minutes)"
-msgstr "Tems de la sessió sense activitat (entre 10 i 120 minuts)"
+msgstr "Temps de la sessió sense activitat (entre 10 i 120 minuts)"
 
 #: templates/IWstats_block_editusersonline.htm:10
 msgid "Block time refresh in seconds (minimum 100)"
@@ -216,7 +216,7 @@ msgstr "Nombre de diferents usuaris registrats:"
 
 #: templates/IWstats_admin_stats.htm:47
 msgid "User's stadistics"
-msgstr "Stadístiques de l'usuari/àrua"
+msgstr "Estadístiques de l'usuari/ària"
 
 #: templates/IWstats_admin_stats.htm:66
 #: templates/IWstats_admin_stats.htm:94
@@ -259,7 +259,7 @@ msgstr "Usuaris connectats"
 msgid "There are %s unregistered and 1 registerd user online."
 msgid_plural "There are %s unregistered and %s registered users online."
 msgstr[0] "Hi ha %s visitants i 1 usuari/ària connectat/da."
-msgstr[1] "Hi ha %s visitanta i %s usuaris connectats."
+msgstr[1] "Hi ha %s visitants i %s usuaris connectats."
 
 #: templates/IWstats_admin_modifyconfig.htm:11
 #, php-format

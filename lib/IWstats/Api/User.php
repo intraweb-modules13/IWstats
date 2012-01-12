@@ -65,7 +65,7 @@ class IWstats_Api_User extends Zikula_AbstractApi {
 
     public function getAllRecords($args) {
 
-        if (!SecurityUtil::checkPermission('IWstats::', '::', ACCESS_ADMIN)) {
+        if (!SecurityUtil::checkPermission('IWstats::', '::', ACCESS_READ)) {
             return LogUtil::registerPermissionError();
         }
 
