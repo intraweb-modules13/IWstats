@@ -79,7 +79,7 @@ class IWstats_Block_Usersonline extends Zikula_Controller_AbstractBlock {
         $users = array();
         $ipArray = array();
         $usersArray = array();
-	$usersList = '';
+        $usersList = '';
 
         // get the number of validated users and the number of different Ips detected
         foreach ($records as $record) {
@@ -130,9 +130,9 @@ class IWstats_Block_Usersonline extends Zikula_Controller_AbstractBlock {
             return;
         }
 
-        $refreshtime = (int)FormUtil::getPassedValue('refreshtime', 100, 'POST');
-        $sessiontime = (int)FormUtil::getPassedValue('sessiontime', 100, 'POST');
-        $unsee = (int)FormUtil::getPassedValue('unsee', 0, 'POST');
+        $refreshtime = (int) FormUtil::getPassedValue('refreshtime', 100, 'POST');
+        $sessiontime = (int) FormUtil::getPassedValue('sessiontime', 100, 'POST');
+        $unsee = (int) FormUtil::getPassedValue('unsee', 0, 'POST');
 
         // default values in case they are not correct
         $refreshtime = (!is_numeric($refreshtime) || $refreshtime > 100) ? $refreshtime : 100;
@@ -143,11 +143,11 @@ class IWstats_Block_Usersonline extends Zikula_Controller_AbstractBlock {
         $vars = BlockUtil::varsFromContent($blockinfo['content']);
 
         // alter the corresponding variable
-        $vars['refreshtime']    = $refreshtime;
-        $vars['sessiontime']       = $sessiontime;
-        $vars['unsee']       = $unsee;
+        $vars['refreshtime'] = $refreshtime;
+        $vars['sessiontime'] = $sessiontime;
+        $vars['unsee'] = $unsee;
 
-	// write back the new contents
+        // write back the new contents
         $blockinfo['content'] = BlockUtil::varsToContent($vars);
 
         return $blockinfo;
